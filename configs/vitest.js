@@ -7,9 +7,10 @@ import process from 'node:process'
  * - `node` environment by default; DOM tests opt in per-file with a
  *   `// @vitest-environment happy-dom` docblock (jsdom lacks matchMedia/RO/IO).
  * - `@ts` alias is TEST-ONLY (repos enforce this with an alias-boundary test).
- * - Coverage provider is istanbul: fallow's `--coverage` reads istanbul-format
- *   coverage-final.json. Revisit if the v8-provider spike (alignment plan,
- *   Task 6 Step 1) proves fallow reads v8-remapped output.
+ * - Coverage provider is v8: since Vitest 3.2 it AST-remaps into
+ *   istanbul-format coverage-final.json, which fallow's `--coverage` reads
+ *   (verified 2026-08-13 on cursor-follower — v8 matched one more function
+ *   than the istanbul provider did).
  *
  * Usage in a repo's vitest.config.ts:
  *   import { defineConfig } from 'vitest/config'
