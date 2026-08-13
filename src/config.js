@@ -180,7 +180,8 @@ export async function loadCtx() {
     ` * © ${new Date().getFullYear()} ${header.Author}`.trimEnd(),
     ` * License: ${header.License}`,
     ` * ${header['Plugin URI']}`.trimEnd(),
-    ...config.bannerLines.map((line) => ` * ${line}`),
+    // trimEnd: an empty bannerLines entry is a ' *' separator line, no trailing space
+    ...config.bannerLines.map((line) => ` * ${line}`.trimEnd()),
     ' */'
   ].join('\n')
 
