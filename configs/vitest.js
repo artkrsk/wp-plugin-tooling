@@ -25,6 +25,9 @@ export function createVitestConfig({ defineKey, setupFiles = ['tests/setup.ts'] 
     test: {
       environment: 'node',
       include: ['tests/**/*.test.ts'],
+      // A fresh template repo has no tests yet — the suite gate starts passing
+      // and tightens itself the moment the first test lands.
+      passWithNoTests: true,
       setupFiles,
       restoreMocks: true,
       unstubGlobals: true,
