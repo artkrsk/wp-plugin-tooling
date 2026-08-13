@@ -33,7 +33,7 @@ export function createVitestConfig({ defineKey, setupFiles = ['tests/setup.ts'] 
       restoreMocks: true,
       unstubGlobals: true,
       coverage: {
-        provider: 'istanbul',
+        provider: 'v8',
         include: ['src/ts/**/*.ts'],
         exclude: [
           'src/ts/**/*.d.ts',
