@@ -1,0 +1,4 @@
+allowBuilds:
+  # sass pulls @parcel/watcher for its own CLI --watch, which this build never uses
+  '@parcel/watcher': false
+  esbuild: true

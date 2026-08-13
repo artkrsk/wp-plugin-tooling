@@ -1,0 +1,41 @@
+{
+  "name": "@arts/wp-plugin-tooling",
+  "version": "1.0.0",
+  "description": "Shared build runner, release tooling, and config bases for Arts WordPress plugins",
+  "author": "Artem Semkin",
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "private": false,
+  "bin": {
+    "arts-wp": "./src/cli.js"
+  },
+  "exports": {
+    ".": "./src/index.js",
+    "./biome": "./configs/biome.json",
+    "./tsconfig": "./configs/tsconfig.base.json",
+    "./stylelint": "./configs/stylelint.json",
+    "./vitest": "./configs/vitest.js"
+  },
+  "files": [
+    "src",
+    "configs"
+  ],
+  "engines": {
+    "node": ">=24"
+  },
+  "packageManager": "pnpm@11.17.0",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "archiver": "^8.0.0",
+    "chokidar": "^5.0.0",
+    "esbuild": "^0.28.1",
+    "sass": "^1.101.0",
+    "stylelint-config-standard-scss": "^15.0.1"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.10"
+  }
+}
