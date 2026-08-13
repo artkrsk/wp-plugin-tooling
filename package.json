@@ -14,7 +14,10 @@
     "./biome": "./configs/biome.json",
     "./tsconfig": "./configs/tsconfig.base.json",
     "./stylelint": "./configs/stylelint.json",
-    "./vitest": "./configs/vitest.js"
+    "./vitest": {
+      "types": "./configs/vitest.d.ts",
+      "import": "./configs/vitest.js"
+    }
   },
   "files": [
     "src",

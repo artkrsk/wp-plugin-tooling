@@ -52,6 +52,7 @@ export async function init(root, args) {
     __SLUG__: slug,
     __NAME__: name,
     __NAMESPACE__: pascal(slug).replace(/ForElementor$/, ''),
+    __CONSTANT__: constantCase(slug),
     __VERSION_CONSTANT__: `ARTS_${constantCase(slug)}_VERSION`,
     __DEFINE_KEY__: `__ARTS_${constantCase(slug)}_VERSION__`,
     __AUTOLOADER_SUFFIX__: deriveAutoloaderSuffix(slug)
