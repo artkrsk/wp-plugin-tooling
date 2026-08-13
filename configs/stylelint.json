@@ -8,6 +8,8 @@
     "scss/operator-no-newline-after": null,
     "property-no-vendor-prefix": null,
     "value-no-vendor-prefix": null,
-    "no-descending-specificity": null
+    "no-descending-specificity": null,
+    "media-feature-range-notation": null,
+    "length-zero-no-unit": null
   }
 }
