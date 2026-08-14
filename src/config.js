@@ -17,7 +17,8 @@ const KNOWN = {
     'paths',
     'devTarget',
     'vendor',
-    'blueprint'
+    'blueprint',
+    'externals'
   ],
   entry: ['ts', 'sass'],
   paths: ['php', 'plugin', 'dist'],
@@ -120,7 +121,22 @@ export function validateConfig(config) {
     }
   }
 
-  return { ...config, bundles, blueprint: config.blueprint ?? null }
+  if (config.externals !== undefined) {
+    const bad =
+      typeof config.externals !== 'object' ||
+      config.externals === null ||
+      Array.isArray(config.externals) ||
+      Object.entries(config.externals).some(
+        ([k, v]) => typeof v !== 'string' || v === '' || k === ''
+      )
+    if (bad) {
+      throw new Error(
+        '"externals" must map import specifiers to global expressions, e.g. { react: \'React\', \'@wordpress/element\': \'wp.element\' }'
+      )
+    }
+  }
+
+  return { ...config, bundles, blueprint: config.blueprint ?? null, externals: config.externals ?? {} }
 }
 
 /** Autoloader class suffix derived from the slug so sibling plugins never collide. */

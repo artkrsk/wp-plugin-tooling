@@ -1,6 +1,27 @@
 import { build, context } from 'esbuild'
 import { log } from './log.js'
 
+const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+// Maps import specifiers to host-provided globals (config.externals) — the
+// WordPress-React pattern, where bundling react inline would load a second
+// copy next to wp-admin's and break hooks state. esbuild's own `external`
+// can't do this in an IIFE (it leaves a require() no browser has), so each
+// mapped specifier resolves to a one-line module reading the global instead.
+function globalExternalsPlugin(map) {
+  const filter = new RegExp(`^(${Object.keys(map).map(escapeRegex).join('|')})$`)
+  return {
+    name: 'global-externals',
+    setup(b) {
+      b.onResolve({ filter }, (args) => ({ path: args.path, namespace: 'global-external' }))
+      b.onLoad({ filter: /.*/, namespace: 'global-external' }, (args) => ({
+        contents: `module.exports = ${map[args.path]}`,
+        loader: 'js'
+      }))
+    }
+  }
+}
+
 // Plain IIFE, no globalName: the bundles are pure side-effect scripts.
 // Banner goes through esbuild's own option so sourcemaps stay line-accurate.
 // Secondary bundles override entry/banner/sourcemap — e.g. a gate bundle's
@@ -23,7 +44,10 @@ function options(ctx, { dev, outfile, entry, banner, sourcemap }) {
     minify: !dev,
     sourcemap: sourcemap ?? (dev ? 'linked' : false),
     banner: { js: banner ?? ctx.banner },
-    logLevel: 'warning'
+    logLevel: 'warning',
+    ...(Object.keys(ctx.config.externals ?? {}).length > 0
+      ? { plugins: [globalExternalsPlugin(ctx.config.externals)] }
+      : {})
   }
 }
 

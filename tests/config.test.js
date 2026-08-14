@@ -19,6 +19,18 @@ function minimal() {
 }
 
 describe('validateConfig', () => {
+  it('accepts an externals map and defaults it to empty', () => {
+    expect(validateConfig({ ...minimal(), externals: { react: 'React' } }).externals).toEqual({
+      react: 'React'
+    })
+    expect(validateConfig(minimal()).externals).toEqual({})
+  })
+
+  it('rejects externals that are not a specifier→global map', () => {
+    expect(() => validateConfig({ ...minimal(), externals: ['react'] })).toThrow(/externals/)
+    expect(() => validateConfig({ ...minimal(), externals: { react: '' } })).toThrow(/externals/)
+  })
+
   it('accepts a minimal valid config', () => {
     expect(() => validateConfig(minimal())).not.toThrow()
   })
