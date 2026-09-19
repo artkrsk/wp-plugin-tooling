@@ -34,6 +34,13 @@ const COMPOSER_AUTOLOAD_FILES = [
 
 const notHidden = (src) => !path.basename(src).startsWith('.')
 
+function emptyDir(dir) {
+  mkdirSync(dir, { recursive: true })
+  for (const entry of readdirSync(dir)) {
+    rmSync(path.join(dir, entry), { recursive: true, force: true })
+  }
+}
+
 export async function buildRelease(ctx) {
   const { staging, zip } = ctx.paths
   const slug = ctx.config.slug
@@ -42,10 +49,7 @@ export async function buildRelease(ctx) {
   // bind-mount it into test containers, and removing the mounted inode severs
   // the mount (on Linux and macOS Docker Desktop alike) until the environment
   // restarts.
-  mkdirSync(staging, { recursive: true })
-  for (const entry of readdirSync(staging)) {
-    rmSync(path.join(staging, entry), { recursive: true, force: true })
-  }
+  emptyDir(staging)
   rmSync(zip, { force: true })
 
   cpSync(ctx.paths.plugin, staging, { recursive: true, filter: notHidden })
@@ -111,6 +115,22 @@ export async function buildRelease(ctx) {
   assertRelease(ctx)
   const size = (statSync(zip).size / 1024).toFixed(0)
   log.success(`Release ready: ${zip} (${size} KB)`)
+
+  if (ctx.paths.devTarget) {
+    mirrorToDevTarget(ctx)
+  }
+}
+
+// Same in-place emptying as staging (the consumer may be watching or bind-mounting the dir).
+// The slug guard keeps a mistyped DEV_TARGET (e.g. the plugins/ dir itself) from wiping siblings.
+function mirrorToDevTarget(ctx) {
+  const { staging, devTarget } = ctx.paths
+  if (path.basename(devTarget) !== ctx.config.slug) {
+    throw new Error(`DEV_TARGET must end in "${ctx.config.slug}" — refusing to empty ${devTarget}`)
+  }
+  emptyDir(devTarget)
+  cpSync(staging, devTarget, { recursive: true, filter: notHidden })
+  log.success(`Release mirrored → ${devTarget}`)
 }
 
 // Staging lives across builds (emptied in place, see buildRelease), so macOS can

@@ -14,7 +14,7 @@ pnpm add -D github:artkrsk/wp-plugin-tooling
 
 ```
 arts-wp dev                                 watch-compile + mirror to DEV_TARGET
-arts-wp build                               release build into dist/ (stamps versions first)
+arts-wp build                               release build into dist/ (stamps versions first), then mirrors to DEV_TARGET
 arts-wp release <patch|minor|major|x.y.z>   bump, stamp, validate changelog, commit, tag
 arts-wp changelog extract|validate|sync     readme.txt changelog tooling
 arts-wp blueprint build|check               wp.org Live Preview blueprint
@@ -67,6 +67,8 @@ export default {
 ## How dev sync works
 
 `arts-wp dev` watches `src/php`, `src/wordpress-plugin`, and `vendor-prefixed` with chokidar. The initial mirror scope-cleans `src/php` at the target; after that it's per-file copies with `awaitWriteFinish` so a half-written file never reaches the site. Vendors resync only when `composer.lock` changes; a `composer.json` watcher restamps version meta live. esbuild writes bundles into `src/php/libraries/<slug>/` and the same watcher mirrors them. `DEV_TARGET` is optional — without it, dev compiles without syncing (composer-symlink consumers run their own pipeline).
+
+`arts-wp build` also mirrors the finished `dist/<slug>/` tree (minified bundles, optimized autoloader, no `.map`) to `DEV_TARGET` when it's set, so the consumer can run exactly what ships. The target is emptied in place first and its directory name must equal the slug. Skip it with `DEV_TARGET= pnpm build`; don't run it while `dev` is watching the same target.
 
 ## Changelog grammar
 

@@ -23,7 +23,7 @@ function flag(name) {
 const USAGE = `arts-wp <command>
 
   dev                                 watch-compile + mirror to DEV_TARGET
-  build                               release build into dist/
+  build                               release build into dist/ + mirror to DEV_TARGET
   release <patch|minor|major|x.y.z>   bump, stamp, validate changelog, commit, tag
   changelog extract  [--version v|--latest]   print an entry (release body)
   changelog validate [--version v|--latest]   enforce the changelog grammar
