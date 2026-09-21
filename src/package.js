@@ -174,6 +174,14 @@ function assertRelease(ctx) {
       throw new Error(`Missing from release: ${rel}`)
     }
   }
+  // A U+FEFF anywhere but byte 0 is invisible in review and silently kills the statement after it.
+  const libDir = `src/php/libraries/${slug}/`
+  for (const rel of entries) {
+    if (!rel.startsWith(libDir) || !/\.(css|js)$/.test(rel)) continue
+    if (readFileSync(path.join(ctx.paths.staging, rel), 'utf8').indexOf('﻿') > 0) {
+      throw new Error(`Stray U+FEFF inside ${rel} — it silently kills the statement that follows`)
+    }
+  }
   const bundleHead = readFileSync(
     path.join(ctx.paths.staging, `src/php/libraries/${slug}/${slug}.js`),
     'utf8'

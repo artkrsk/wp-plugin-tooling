@@ -8,9 +8,12 @@ import { log } from './log.js'
 // silently ignored by compile()). Dev skips the banner so the sourcemap stays line-accurate.
 export function buildCss(ctx, { dev, outfile }) {
   if (!ctx.paths.sassEntry) return
+  // charset: false — non-ASCII output (an icon-font glyph is enough) otherwise makes Sass lead with
+  // a BOM, which the banner below displaces into the middle of the file, killing the first rule.
   const result = compile(ctx.paths.sassEntry, {
     style: dev ? 'expanded' : 'compressed',
     sourceMap: dev,
+    charset: false,
     loadPaths: ['node_modules']
   })
   mkdirSync(path.dirname(outfile), { recursive: true })
