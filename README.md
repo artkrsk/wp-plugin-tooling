@@ -72,7 +72,7 @@ export default {
 
 ## Changelog grammar
 
-readme.txt is the single changelog source (written where wp.org reads it). Every bullet:
+readme.txt is the single changelog source (written where wp.org reads it). Each entry is headed `= X.Y.Z =` while drafted; `arts-wp release` dates it with the UTC day it runs, `= X.Y.Z – October 21, 2026 =` (en dash), replacing any date already there. Every bullet:
 
 ```
 * added: …

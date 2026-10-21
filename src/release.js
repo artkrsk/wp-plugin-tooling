@@ -1,7 +1,7 @@
 import { execSync } from 'node:child_process'
 import { readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
-import { validateCmd, syncCmd } from './changelog.js'
+import { stampDate, syncCmd, validateCmd } from './changelog.js'
 import { log } from './log.js'
 import { stampAll } from './meta.js'
 
@@ -19,7 +19,7 @@ function bumpVersion(current, spec) {
 /**
  * The one-command release: bump composer.json (the single version source),
  * stamp every derived file, refuse to proceed without a changelog entry,
- * regenerate CHANGELOG.md, commit and tag. Pushing the tag stays manual.
+ * date that entry, regenerate CHANGELOG.md, commit and tag. Pushing the tag stays manual.
  */
 export async function release(spec, loadCtx) {
   const root = process.cwd()
@@ -40,6 +40,8 @@ export async function release(spec, loadCtx) {
   writeFileSync(composerPath, `${JSON.stringify(composer, null, 2)}\n`)
 
   const ctx = await loadCtx() // fresh: reads the bumped composer.json
+  const readme = readFileSync(ctx.paths.readme, 'utf8')
+  writeFileSync(ctx.paths.readme, stampDate(readme, next, new Date()))
   stampAll(ctx)
   syncCmd(root)
 
