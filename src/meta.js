@@ -20,6 +20,10 @@ function replaceHeaderLine(block, label, value) {
   return block.replace(pattern, (_, prefix) => `${prefix} ${value}`)
 }
 
+// "Requires Plugins" is hand-maintained. "Tested up to" belongs to readme.txt alone: Plugin Check
+// fails a main file that declares it (plugin_header_tested_up_to_not_allowed).
+const MAIN_FILE_SKIPPED = new Set(['Requires Plugins', 'Tested up to'])
+
 function stampMainFile(ctx) {
   const original = readFileSync(ctx.paths.mainFile, 'utf8')
   const headerMatch = original.match(/\/\*\*[\s\S]*?\*\//)
@@ -27,7 +31,7 @@ function stampMainFile(ctx) {
 
   let header = headerMatch[0]
   for (const [field, value] of Object.entries(ctx.header)) {
-    if (field === 'Requires Plugins' || value === undefined || value === '') continue
+    if (MAIN_FILE_SKIPPED.has(field) || value === undefined || value === '') continue
     header = replaceHeaderLine(header, field, value)
   }
 

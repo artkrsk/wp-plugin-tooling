@@ -105,11 +105,11 @@ describe('stampAll — plugin header', () => {
 
   it('warns instead of inserting a header line that is absent', () => {
     const ctx = makeCtx()
-    // "Tested up to" is not in MAIN_FILE's docblock.
+    // "License" is not in MAIN_FILE's docblock.
     stampAll(ctx)
 
-    expect(read(ctx.paths.mainFile)).not.toContain('Tested up to')
-    expect(warn.mock.calls.flat().join('\n')).toMatch(/no "Tested up to:" line/)
+    expect(read(ctx.paths.mainFile)).not.toContain('License:')
+    expect(warn.mock.calls.flat().join('\n')).toMatch(/no "License:" line/)
   })
 
   it('throws when the file has no header docblock at all', () => {
