@@ -85,9 +85,8 @@ export async function init(root, args) {
   }
 
   log.info('Manual wiring checklist:')
-  log.info('  1. Register a Pi runner: scripts/provision-runner.sh in wordpress-plugin-workflows')
-  log.info('  2. After wp.org approval: rotate-svn-secrets.sh --add ' + slug)
-  log.info('  3. gh secret set CODECOV_TOKEN (when enabling coverage upload)')
-  log.info('  4. gh secret set CLAUDE_CODE_OAUTH_TOKEN (for the Claude workflows)')
-  log.info('  5. Enable the Renovate app for this repo (after CI is green)')
+  log.info('  1. After wp.org approval: rotate-svn-secrets.sh --add ' + slug)
+  log.info('  2. gh secret set CODECOV_TOKEN (when enabling coverage upload)')
+  log.info('  3. gh secret set CLAUDE_CODE_OAUTH_TOKEN (for the Claude workflows)')
+  log.info('  4. Enable the Renovate app for this repo (after CI is green)')
 }
